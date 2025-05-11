@@ -1,0 +1,62 @@
+-- Custom Loading Screen (Second Script)
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local ReplicatedFirst = game:GetService("ReplicatedFirst")
+local RunService = game:GetService("RunService")
+
+-- Remove default loading screen
+ReplicatedFirst:RemoveDefaultLoadingScreen()
+
+-- Player and GUI setup
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.IgnoreGuiInset = true
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
+
+-- Background setup
+local background = Instance.new("Frame")
+background.Size = UDim2.new(1, 0, 1, 0)
+background.BackgroundColor3 = Color3.fromRGB(10, 10, 20)
+local gradient = Instance.new("UIGradient")
+gradient.Rotation = 45
+gradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(20, 10, 40)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(100, 50, 150)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(40, 20, 80))
+}
+gradient.Parent = background
+background.Parent = screenGui
+
+-- Animated gradient rotation
+spawn(function()
+    while true do
+        gradient.Rotation = (gradient.Rotation + 1) % 360
+        RunService.RenderStepped:Wait()
+    end
+end)
+
+-- Create a star effect
+local function createStar()
+    local star = Instance.new("Frame")
+    star.Size = UDim2.new(0, math.random(6, 12), 0, math.random(6, 12))
+    star.BackgroundColor3 = Color3.fromRGB(math.random(180, 255), math.random(150, 255), math.random(200, 255))
+    star.Position = UDim2.new(math.random(), 0, math.random(), 0)
+    star.BackgroundTransparency = 0.3
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(1, 0)
+    corner.Parent = star
+    local glow = Instance.new("ImageLabel")
+    glow.Image = "rbxassetid://243098098"
+    glow.Size = UDim2.new(2.5, 0, 2.5, 0)
+    glow.Position = UDim2.new(0.5, 0, 0.5, 0)
+    glow.AnchorPoint = Vector2.new(0.5, 0.5)
+    glow.BackgroundTransparency = 1
+    glow.ImageTransparency = 0.5
+    glow.Parent = star
+    star.Parent = background
+
+    spawn(function()
+        local tweenInfo = TweenInfo.new(math.random(2, 4), Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
